@@ -38,8 +38,8 @@ export default function GamesPage() {
         ))}
       </div>
 
-      {/* Active game */}
-      <div>
+      {/* Active game — key ensures full remount on tab switch */}
+      <div key={activeGame}>
         {activeGame === 'miner' && <Miner />}
         {activeGame === 'crash' && <Crash />}
         {activeGame === 'slot1' && <SlotClassic />}
