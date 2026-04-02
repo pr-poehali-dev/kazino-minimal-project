@@ -1,12 +1,26 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import Navbar from '@/components/Navbar';
+import HomePage from '@/pages/HomePage';
+import GamesPage from '@/pages/GamesPage';
+import BonusesPage from '@/pages/BonusesPage';
+import TransferPage from '@/pages/TransferPage';
+import AdminPage from '@/pages/AdminPage';
+
+type Page = 'home' | 'games' | 'bonuses' | 'transfer' | 'admin';
 
 const Index = () => {
+  const [page, setPage] = useState<Page>('home');
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 color-black text-black">Добро пожаловать!</h1>
-        <p className="text-xl text-gray-600">тут будет отображаться ваш проект</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <Navbar currentPage={page} onNavigate={setPage} />
+      <main className="max-w-5xl mx-auto px-4 pt-20 pb-12">
+        {page === 'home' && <HomePage onNavigate={setPage} />}
+        {page === 'games' && <GamesPage />}
+        {page === 'bonuses' && <BonusesPage />}
+        {page === 'transfer' && <TransferPage />}
+        {page === 'admin' && <AdminPage />}
+      </main>
     </div>
   );
 };

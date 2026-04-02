@@ -4,89 +4,49 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 220 16% 6%;
+    --foreground: 45 30% 90%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 220 14% 10%;
+    --card-foreground: 45 30% 90%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 220 14% 10%;
+    --popover-foreground: 45 30% 90%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 43 90% 52%;
+    --primary-foreground: 220 16% 6%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 220 12% 16%;
+    --secondary-foreground: 45 30% 80%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 12% 14%;
+    --muted-foreground: 220 8% 50%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 43 90% 52%;
+    --accent-foreground: 220 16% 6%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 45 30% 90%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 220 12% 18%;
+    --input: 220 12% 16%;
+    --ring: 43 90% 52%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%;
+    --sidebar-background: 220 14% 8%;
+    --sidebar-foreground: 45 30% 80%;
+    --sidebar-primary: 43 90% 52%;
+    --sidebar-primary-foreground: 220 16% 6%;
+    --sidebar-accent: 220 12% 14%;
+    --sidebar-accent-foreground: 45 30% 80%;
+    --sidebar-border: 220 12% 16%;
+    --sidebar-ring: 43 90% 52%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --gold: 43 90% 52%;
+    --gold-dim: 43 60% 38%;
+    --green-win: 142 70% 45%;
+    --red-lose: 0 72% 55%;
   }
 }
 
@@ -94,8 +54,151 @@
   * {
     @apply border-border;
   }
-
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-golos;
+  }
+}
+
+@layer utilities {
+  .font-golos {
+    font-family: "Golos Text", sans-serif;
+  }
+  .font-oswald {
+    font-family: "Oswald", sans-serif;
+  }
+
+  .gold-text {
+    color: hsl(var(--gold));
+  }
+  .gold-border {
+    border-color: hsl(var(--gold));
+  }
+  .gold-bg {
+    background-color: hsl(var(--gold));
+  }
+
+  .card-dark {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: 0.75rem;
+  }
+
+  .btn-gold {
+    background: hsl(var(--gold));
+    color: hsl(220 16% 6%);
+    font-weight: 600;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+  }
+  .btn-gold:hover {
+    background: hsl(43 95% 60%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px hsl(43 90% 52% / 0.4);
+  }
+
+  .btn-ghost-gold {
+    background: transparent;
+    color: hsl(var(--gold));
+    border: 1px solid hsl(var(--gold) / 0.4);
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+  }
+  .btn-ghost-gold:hover {
+    background: hsl(var(--gold) / 0.1);
+    border-color: hsl(var(--gold));
+  }
+
+  .nav-item {
+    color: hsl(var(--muted-foreground));
+    transition: color 0.2s;
+    cursor: pointer;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+  }
+  .nav-item:hover,
+  .nav-item.active {
+    color: hsl(var(--gold));
+    background: hsl(var(--gold) / 0.08);
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+  .animate-scale-in {
+    animation: scaleIn 0.2s ease-out;
+  }
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes crash-fly {
+    0% {
+      transform: translate(0, 0) scale(1);
+    }
+    100% {
+      transform: translate(80px, -80px) scale(1.2);
+    }
+  }
+  @keyframes slot-spin {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-200%);
+    }
+  }
+  @keyframes pulse-gold {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 hsl(43 90% 52% / 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 8px hsl(43 90% 52% / 0);
+    }
+  }
+  .animate-pulse-gold {
+    animation: pulse-gold 1.5s ease-in-out infinite;
+  }
+  .animate-crash-fly {
+    animation: crash-fly 0.6s ease-in-out forwards;
   }
 }
