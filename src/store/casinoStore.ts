@@ -36,7 +36,21 @@ export type Bonus = {
 
 const generateId = () => Math.random().toString(36).slice(2, 10).toUpperCase();
 
-const INITIAL_USERS: User[] = [
+// ── LocalStorage helpers ──────────────────────────────────────────────────────
+const LS_USERS        = 'kazah_users';
+const LS_TRANSACTIONS = 'kazah_transactions';
+const LS_BONUSES      = 'kazah_bonuses';
+const LS_CURRENT_USER = 'kazah_current_user_id';
+
+function lsGet<T>(key: string): T | null {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch { return null; }
+}
+function lsSet(key: string, value: unknown) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* ignore */ }
+}
+
+// ── Default data ──────────────────────────────────────────────────────────────
+const DEFAULT_USERS: User[] = [
   {
     id: 'ADMIN001',
     username: 'admin',
@@ -61,21 +75,9 @@ const INITIAL_USERS: User[] = [
     totalLost: 800,
     gamesPlayed: 47,
   },
-  {
-    id: 'USR67890',
-    username: 'lucky_one',
-    password: '123456',
-    balance: 12500,
-    isAdmin: false,
-    isBanned: false,
-    createdAt: new Date().toISOString(),
-    totalWon: 8400,
-    totalLost: 3200,
-    gamesPlayed: 112,
-  },
 ];
 
-const INITIAL_TRANSACTIONS: Transaction[] = [
+const DEFAULT_TRANSACTIONS: Transaction[] = [
   {
     id: generateId(),
     fromId: 'SYSTEM',
@@ -85,18 +87,9 @@ const INITIAL_TRANSACTIONS: Transaction[] = [
     description: 'Приветственный бонус',
     createdAt: new Date(Date.now() - 86400000).toISOString(),
   },
-  {
-    id: generateId(),
-    fromId: 'USR12345',
-    toId: 'USR67890',
-    amount: 500,
-    type: 'transfer',
-    description: 'Перевод другу',
-    createdAt: new Date(Date.now() - 3600000).toISOString(),
-  },
 ];
 
-const INITIAL_BONUSES: Bonus[] = [
+const DEFAULT_BONUSES: Bonus[] = [
   {
     id: 'BON001',
     title: 'Приветственный бонус',
@@ -127,15 +120,32 @@ const INITIAL_BONUSES: Bonus[] = [
   },
 ];
 
-// Global state singleton
-let users: User[] = [...INITIAL_USERS];
-let transactions: Transaction[] = [...INITIAL_TRANSACTIONS];
-let bonuses: Bonus[] = [...INITIAL_BONUSES];
-let currentUser: User | null = null;
+// ── Инициализация из localStorage (или defaults) ──────────────────────────────
+let users: User[]           = lsGet<User[]>(LS_USERS)           ?? [...DEFAULT_USERS];
+let transactions: Transaction[] = lsGet<Transaction[]>(LS_TRANSACTIONS) ?? [...DEFAULT_TRANSACTIONS];
+let bonuses: Bonus[]        = lsGet<Bonus[]>(LS_BONUSES)        ?? [...DEFAULT_BONUSES];
+
+// Восстанавливаем текущего пользователя по сохранённому ID
+const savedUserId = lsGet<string>(LS_CURRENT_USER);
+let currentUser: User | null = savedUserId
+  ? (users.find(u => u.id === savedUserId) ?? null)
+  : null;
+
 let listeners: (() => void)[] = [];
 
-const notify = () => listeners.forEach(l => l());
+function persist() {
+  lsSet(LS_USERS, users);
+  lsSet(LS_TRANSACTIONS, transactions);
+  lsSet(LS_BONUSES, bonuses);
+  lsSet(LS_CURRENT_USER, currentUser?.id ?? null);
+}
 
+const notify = () => {
+  persist();
+  listeners.forEach(l => l());
+};
+
+// ── Store ─────────────────────────────────────────────────────────────────────
 export const casinoStore = {
   getUsers: () => users,
   getTransactions: () => transactions,
@@ -265,7 +275,6 @@ export const casinoStore = {
     return casinoStore.claimBonus(userId, bonus.id);
   },
 
-  // Admin actions
   banUser: (userId: string) => {
     users = users.map(u => u.id === userId ? { ...u, isBanned: !u.isBanned } : u);
     notify();
@@ -301,9 +310,9 @@ export const casinoStore = {
 
   getStats: () => {
     const totalDeposits = transactions.filter(t => t.type === 'deposit').reduce((s, t) => s + t.amount, 0);
-    const totalWins = transactions.filter(t => t.type === 'win').reduce((s, t) => s + t.amount, 0);
-    const totalLosses = transactions.filter(t => t.type === 'loss').reduce((s, t) => s + t.amount, 0);
-    const totalBonuses = transactions.filter(t => t.type === 'bonus').reduce((s, t) => s + t.amount, 0);
+    const totalWins     = transactions.filter(t => t.type === 'win').reduce((s, t) => s + t.amount, 0);
+    const totalLosses   = transactions.filter(t => t.type === 'loss').reduce((s, t) => s + t.amount, 0);
+    const totalBonuses  = transactions.filter(t => t.type === 'bonus').reduce((s, t) => s + t.amount, 0);
     return {
       totalUsers: users.filter(u => !u.isAdmin).length,
       activeUsers: users.filter(u => !u.isBanned && !u.isAdmin).length,
@@ -317,7 +326,7 @@ export const casinoStore = {
   },
 };
 
-// React hook
+// ── React hook ────────────────────────────────────────────────────────────────
 export function useCasino() {
   const [tick, setTick] = useState(0);
 
@@ -326,7 +335,6 @@ export function useCasino() {
     return unsub;
   }, []);
 
-  // suppress unused warning
   void tick;
 
   return {
